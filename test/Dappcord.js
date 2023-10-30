@@ -48,10 +48,34 @@ describe("Dappcord", function() {
 
     it("Returns channel attributes", async () => {
       const channel = await dappcord.getChannel(1)
-      expect(channel.id).to.equal(1) 
-      expect(channel.name).to.equal("general") 
-      expect(channel.cost).to.equal(tokens(1)) 
+      expect(channel.id).to.equal(1)
+      expect(channel.name).to.equal("general")
+      expect(channel.cost).to.equal(tokens(1))
+    })
+  })
+
+  describe("Joining Channels", async () => {
+    const ID = 1
+    const AMOUNT = ethers.utils.parseUnits("1", "ether")
+
+    beforeEach(async () => {
+      const transaction = await dappcord.connect(user).mint(ID, {value: AMOUNT })
+      await transaction.wait()
     })
 
+    it("Joins the user", async () => {
+      const result = await dappcord.hasJoined(ID, user.address)
+      expect(result).to.equal(true)
+    })
+
+    it("Increases total supply", async () => {
+      const result = await dappcord.totalSupply()
+      expect(result).to.equal(ID)
+    })
+
+    it("Updates contract balance", async () => {
+      const result = await ethers.provider.getBalance(dappcord.address)
+      expect(result).to.equal(AMOUNT)
+    })
   })
 })

@@ -8,7 +8,6 @@ contract Dappcord is ERC721 {
     uint256 public totalChannels;
     address public owner;
 
-   
    struct Channel {
     uint256 id;
     string name;
@@ -45,10 +44,14 @@ contract Dappcord is ERC721 {
 
         totalSupply++;
         _safeMint(msg.sender, totalSupply);
-
     }
 
     function getChannel(uint256 _id) public view returns (Channel memory) {
         return channels[_id];
+    }
+
+    function withdraw() public onlyOwner {
+        (bool success, ) = owner.call{value: address(this).balance}("");
+        require(success);
     }
 }

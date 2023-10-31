@@ -54,6 +54,21 @@ describe("Dappcord", function() {
     })
   })
 
+  describe("Sets user Profile", async () => {
+    it("Set and retrieve user profiles", async function() {
+      const name = "Alice";
+      const bio = "Crypto enthusiast";
+      const avatarUrl = "https://example.com/avatar.png";
+
+      await dappcord.connect(user1).setUserProfile(name, bio, avatarUrl);
+
+      const userProfile = await dappcord.getUserProfile(user1.address);
+      expect(userProfile.name).to.equal("Alice");
+      expect(userProfile.bio).to.equal("Crypto enthusiast");
+      expect(userProfile.avatarUrl).to.equal("https://example.com/avatar.png");
+    })
+    }
+
     describe("Joining Channels", async () => {
       const ID = 1
       const AMOUNT = ethers.utils.parseUnits("1", "ether")

@@ -14,7 +14,14 @@ contract Dappcord is ERC721 {
     uint256 cost;
    }
 
+   struct UserProfile {
+    string name;
+    string bio;
+    string avatarUrl;
+   }
+
    mapping(uint256 => Channel) public channels;
+   mapping(address => UserProfile) public userProfiles;
    mapping(uint256 => mapping(address => bool)) public hasJoined;
 
    modifier onlyOwner() {
@@ -34,6 +41,13 @@ contract Dappcord is ERC721 {
        channels[totalChannels] = Channel(totalChannels, _name, _cost);
     }
 
+    function setUserProfile(string memory _name, string memory _bio, string memory _avatarUrl) public {
+        UserProfile storage profile = userProfiles[msg.sender];
+        profile.name = _name;
+        profile.bio = _bio;
+        profile.avatarUrl = _avatarUrl;
+    }
+    
     function mint(uint256 _id) public payable {
         require(_id != 0);
         require(_id <= totalChannels);
@@ -49,7 +63,11 @@ contract Dappcord is ERC721 {
     function getChannel(uint256 _id) public view returns (Channel memory) {
         return channels[_id];
     }
-
+    
+    function getUserProfile(address _user) public view returns (UserProfile memory) {
+        return userProfiles[_user];
+    }
+    
     function withdraw() public onlyOwner {
         (bool success, ) = owner.call{value: address(this).balance}("");
         require(success);

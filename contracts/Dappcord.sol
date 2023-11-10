@@ -42,6 +42,8 @@ contract Dappcord is ERC721 {
     }
 
     function setUserProfile(string memory _name, string memory _bio, string memory _avatarUrl) public {
+        require(bytes(_name).length > 0, "Name must not be empty");
+       
         UserProfile storage profile = userProfiles[msg.sender];
         profile.name = _name;
         profile.bio = _bio;
@@ -50,7 +52,7 @@ contract Dappcord is ERC721 {
     
     function mint(uint256 _id) public payable {
         require(_id != 0);
-        require(_id <= totalChannels);
+        require(_id <= totalChannels); 
         require(hasJoined[_id][msg.sender] == false);
         require(msg.value >= channels[_id].cost);
 

@@ -137,11 +137,14 @@ describe("Dappcord", function() {
         })).to.be.reverted
       })
 
-       it("Reverts minting with ID beyond total channels", async () => {
+      it("Reverts minting with ID beyond total channels", async () => {
         const invalidChannelId = (await dappcord.totalChannels()) + 1
-        await expect(dappcord.mint(invalidChannelId, {value: ethers.utils.parseEther("1")})).to.be.reverted
-    
-        })
+        await expect(dappcord.mint(invalidChannelId, {
+          value: ethers.utils.parseEther("1")
+        })).to.be.reverted
+      })
+
+
 
       it("Rejects if user has already joined", async () => {
         const Id = 1;
@@ -161,6 +164,17 @@ describe("Dappcord", function() {
       it("Rejects insufficient amount", async () => {
         await expect(dappcord.connect(buyer).mint(1, {
           value: ethers.utils.parseUnits('0.5', 'ether')
+        })).to.be.reverted
+      })
+
+      it("Reverts duplicate hasJoined setting", async () => {
+        const channelId = 1
+        await dappcord.mint(channelId, {
+          value: ethers.utils.parseEther("1")
+        })
+
+        await expect(dappcord.mint(channelId, {
+          value: ethers.utils.parseEther("1")
         })).to.be.reverted
       })
     })
